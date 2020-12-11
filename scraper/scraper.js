@@ -200,7 +200,7 @@ async function getCheeseInfo(link) {
 }
 
 async function getCheeseOfDay() {
-    return await axios.get("https://cheese.com")
+    return axios.get("https://cheese.com")
         .then((response) => {
             const div = response.data.match(/<div id="cheese-of-day" class="text-center">[\w\W]+?<\/div>/);
             const dirty_link = div[0].match(/<a href=(.+)>/)[1];

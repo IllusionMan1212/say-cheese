@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const autoIncrement = require('mongoose-auto-increment');
 
 const cheeseSchema = new mongoose.Schema({
     id: {
@@ -103,6 +104,11 @@ const cheeseSchema = new mongoose.Schema({
         type: String,
         required: true,
     }],
+});
+
+cheeseSchema.plugin(autoIncrement.plugin, {
+    model: "cheese",
+    field: "id"
 });
 
 module.exports = mongoose.model("cheese", cheeseSchema);

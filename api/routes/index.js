@@ -7,7 +7,7 @@ const { JSDOM } = require('jsdom');
 const Cheese = require(`${__dirname}/../models/cheese`);
 
 router.get('/cheese', (req, res) => {
-    // TODO: no idea
+    // TODO: random cheese
 });
 
 router.get('/cheese/search', (req, res) => {
@@ -83,38 +83,25 @@ router.get("/cheese/scrape", async (req, res) => {
                     console.log(scraped_data.error);
                     return;
                 }
-                await new Promise((resolve, reject) => {
-                    Cheese.find({}, null, { sort: { id: 1 } }, (err, cheeses) => {
-                    let new_cheese = new Cheese();
+
+                let new_cheese = new Cheese();
+                
+                new_cheese.name = scraped_data.cheese.cheese_name;
+                new_cheese.link = scraped_data.cheese.link;
+                new_cheese.image = scraped_data.cheese.image;
+                new_cheese.description = scraped_data.cheese.description;
+                new_cheese.attributes = scraped_data.cheese.attributes;
+                new_cheese.types = scraped_data.cheese.types;
+                new_cheese.countries = scraped_data.cheese.countries;
+                new_cheese.milks = scraped_data.cheese.milks;
+                new_cheese.textures = scraped_data.cheese.textures;
+                new_cheese.colors = scraped_data.cheese.colors;
+                new_cheese.save(err => {
                     if (err) {
-                        reject();
-                        // NOTE: no idea if the status will even be hit
                         res.status(500).json({ failed: true, status: 500, error: err });
                         return;
                     }
-                    
-                    console.log(cheeses.length + 1);
-                    new_cheese.id = cheeses.length + 1;
-                    new_cheese.name = scraped_data.cheese.cheese_name;
-                    new_cheese.link = scraped_data.cheese.link;
-                    new_cheese.image = scraped_data.cheese.image;
-                    new_cheese.description = scraped_data.cheese.description;
-                    new_cheese.attributes = scraped_data.cheese.attributes;
-                    new_cheese.types = scraped_data.cheese.types;
-                    new_cheese.countries = scraped_data.cheese.countries;
-                    new_cheese.milks = scraped_data.cheese.milks;
-                    new_cheese.textures = scraped_data.cheese.textures;
-                    new_cheese.colors = scraped_data.cheese.colors;
-                    new_cheese.save(err => {
-                        if (err) {
-                            reject();
-                            // NOTE: ditto
-                            res.status(500).json({ failed: true, status: 500, error: err });
-                            return;
-                        }
-                    });
-                    resolve();
-                });});
+                });
             }
         }
     }

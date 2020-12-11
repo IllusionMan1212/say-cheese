@@ -1,7 +1,10 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
 
 const dbURI = process.env.CHEESE_MONGODB_URI;
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+
+autoIncrement.initialize(mongoose.connection);
 
 // CONNECTION EVENTS
 mongoose.connection.on('connected', function () {
