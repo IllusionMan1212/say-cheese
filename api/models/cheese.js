@@ -83,12 +83,7 @@ const cheeseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // these are kinda redundant ¯\_(ツ)_/¯
-    types: [{
-        type: String,
-        required: true,
-    }],
-    countries: [{ // NOTE: should be called country codes but ¯\_(ツ)_/¯
+    country_codes: [{
         type: String,
         required: true,
     }],
@@ -96,15 +91,9 @@ const cheeseSchema = new mongoose.Schema({
         type: String,
         required: true,
     }],
-    textures: [{
-        type: String,
-        required: true,
-    }],
-    colors: [{
-        type: String,
-        required: true,
-    }],
 });
+
+cheeseSchema.index({ name: "text" });
 
 cheeseSchema.plugin(autoIncrement.plugin, {
     model: "cheese",
