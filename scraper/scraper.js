@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { JSDOM } = require("jsdom");
 
-let country_codes = {
+let country_codes_map = {
     AF: "afghanistan",
     AL: "albania",
     AD: "andorra",
@@ -105,7 +105,7 @@ async function getCheeseInfo(link) {
             }
 
             let milks = [];
-            let countries = [];
+            let country_codes = [];
             for (let attrib of attrib_arr) {
                 if (attrib.textContent.includes("Made from")) {
                     attribs.made = attrib.textContent.trim();
@@ -115,7 +115,7 @@ async function getCheeseInfo(link) {
                     }
                 } else if (attrib.textContent.includes("Country of origin")) {
                     attribs.countries = Array.from(attrib.querySelectorAll("a")).map(elem => {
-                        countries.push(Object.keys(country_codes).find(key => country_codes[key] == elem.textContent.toLowerCase().trim()));
+                        country_codes.push(Object.keys(country_codes_map).find(key => country_codes_map[key] == elem.textContent.toLowerCase().trim()));
                         return elem.textContent.trim();
                     });
                 } else if (attrib.textContent.includes("Region")) {
@@ -123,30 +123,30 @@ async function getCheeseInfo(link) {
                 } else if (attrib.textContent.includes("Family")) {
                     attribs.family = attrib.textContent.split(":")[1].trim();
                 } else if (attrib.textContent.includes("Type")) {
-                    attribs.types = attrib.textContent.split(":")[1].split(',').map(elem => elem.trim());
+                    attribs.types = attrib.textContent.split(":")[1].split(',').map(type => type.trim().toLowerCase().replace(/\s/g, "-"));
                 } else if (attrib.textContent.includes("Fat")) {
                     attribs.fat = attrib.textContent.split(":")[1].trim();
                 } else if (attrib.textContent.includes("Calcium")) {
                     attribs.calcium = attrib.textContent.split(":")[1].trim();
                 } else if (attrib.textContent.includes("Texture")) {
-                    attribs.textures = attrib.textContent.split(':')[1].split(/,|\band/g).map(elem => elem.trim());
+                    attribs.textures = attrib.textContent.split(':')[1].split(/,|\band/g).map(texture => texture.trim().toLowerCase().replace(/\s/g, "-"));
                 } else if (attrib.textContent.includes("Rind")) {
                     attribs.rind = attrib.textContent.split(":")[1].trim()
                 } else if (attrib.textContent.includes("Colour")) {
-                    attribs.color = attrib.textContent.split(":")[1].trim();
+                    attribs.color = attrib.textContent.split(":")[1].trim().toLowerCase().replace(/\s/g, "-");
                 } else if (attrib.textContent.includes("Flavour")) {
-                    attribs.flavors = attrib.textContent.split(":")[1].split(',').map(elem => elem.trim());
+                    attribs.flavors = attrib.textContent.split(":")[1].split(',').map(flavor => flavor.trim());
                 } else if (attrib.textContent.includes("Aroma")) {
-                    attribs.aromas = attrib.textContent.split(":")[1].split(',').map(elem => elem.trim());
+                    attribs.aromas = attrib.textContent.split(":")[1].split(',').map(aroma => aroma.trim());
                 } else if (attrib.textContent.includes("Vegetarian")) {
                     let veg = attrib.textContent.split(":")[1].trim();
                     attribs.vegetarian = veg == "yes" ? true : veg == "no" ? false : veg;
                 } else if (attrib.textContent.includes("Producers")) {
-                    attribs.producers = attrib.textContent.split(":")[1].split(",").map(elem => elem.trim().replace("&#39;", "'"));
+                    attribs.producers = attrib.textContent.split(":")[1].split(",").map(producer => producer.trim().replace("&#39;", "'"));
                 } else if (attrib.textContent.includes("Synonyms")) {
-                    attribs.synonyms = attrib.textContent.split(":")[1].split(',').map(elem => elem.trim());
+                    attribs.synonyms = attrib.textContent.split(":")[1].split(',').map(synonym => synonym.trim());
                 } else if (attrib.textContent.includes("Alternative spellings")) {
-                    attribs.alternative_spellings = attrib.textContent.split(":")[1].split(',').map(elem => elem.trim());
+                    attribs.alternative_spellings = attrib.textContent.split(":")[1].split(',').map(spelling => spelling.trim());
                 }
             }
             const p_arr = document.getElementsByClassName("description")[0].getElementsByTagName("p");
@@ -160,18 +160,7 @@ async function getCheeseInfo(link) {
             let desc = paragraphs.join("")
             let cheese_name = document.getElementsByClassName("unit")[0].querySelector("h1").textContent.trim();
             let image = "https://cheese.com" + document.getElementsByClassName("cheese-image")[0].querySelector("img").src.replace(/\.\.\//, "/");
-            let types = [];
-            let textures = [];
-            let colors = null;
-            if (attribs.types.length != 0) {
-                types = attribs.types.map(elem => elem.toLowerCase().replace(/\s/g, "-"))
-            }
-            if (attribs.textures.length != 0) {
-                textures = attribs.textures.map(elem => elem.toLowerCase().replace(/\s/g, "-"))
-            }
-            if (attribs.color) {
-                colors = attribs.color.toLowerCase().replace(/\s/g, "-");
-            }
+            
             return {
                 failed: false,
                 status: 200,
@@ -181,12 +170,8 @@ async function getCheeseInfo(link) {
                     image: image,
                     attributes: attribs,
                     description: desc,
-                    types: types,
-                    countries: countries,
+                    country_codes: country_codes,
                     milks: milks,
-                    textures: textures,
-                    colors: colors,
-
                 }
             };
         })
@@ -200,7 +185,7 @@ async function getCheeseInfo(link) {
 }
 
 async function getCheeseOfDay() {
-    return await axios.get("https://cheese.com")
+    return axios.get("https://cheese.com")
         .then((response) => {
             const div = response.data.match(/<div id="cheese-of-day" class="text-center">[\w\W]+?<\/div>/);
             const dirty_link = div[0].match(/<a href=(.+)>/)[1];
