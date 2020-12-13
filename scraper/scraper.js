@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { JSDOM } = require("jsdom");
 
-let country_codes = {
+let country_codes_map = {
   AF: "afghanistan",
   AL: "albania",
   AD: "andorra",
@@ -122,9 +122,9 @@ async function getCheeseInfo(link) {
           attribs.countries = Array.from(attrib.querySelectorAll("a")).map(
             (elem) => {
               countries.push(
-                Object.keys(country_codes).find(
+                Object.keys(country_codes_map).find(
                   (key) =>
-                    country_codes[key] == elem.textContent.toLowerCase().trim()
+                    country_codes_map[key] == elem.textContent.toLowerCase().trim()
                 )
               );
               return elem.textContent.trim();
