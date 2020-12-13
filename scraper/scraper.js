@@ -331,7 +331,8 @@ async function getCheeseOfDay() {
 
 module.exports = {
   scrapeCheese,
-  getCheeseOfDay
+  getCheeseOfDay,
+  getCheeseInfo
 }
 
 // const { performance } = require("perf_hooks");
