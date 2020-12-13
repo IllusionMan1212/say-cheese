@@ -121,11 +121,8 @@ router.get('/cheese/vegetarian', (req, res) => {
 
 router.get("/cheese/scrape", async (req, res) => {
 
-    let all_cheeses;
-
-    scrapeCheese().then(res => {
-        all_cheeses = res;
-        for(const i of res) {
+    scrapeCheese().then(_res => {
+        for(const i of _res) {
             let new_cheese = new Cheese();
             new_cheese.name = i.cheese.cheese_name;
             new_cheese.link = i.cheese.link;
@@ -141,9 +138,9 @@ router.get("/cheese/scrape", async (req, res) => {
                 }
             });
         }
+
+        res.status(200).json({ failed: false, status: 200, cheeses: _res });
     })
-    
-    res.status(200).json({ failed: false, status: 200, cheeses: all_cheeses });
     // let pages = 1;
     // let all_cheeses = [];
     // let track = 0;
