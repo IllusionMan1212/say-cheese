@@ -112,9 +112,7 @@ async function getCheeseInfo(link) {
                     attribs.made = attrib.textContent.trim();
                     arr = attrib.getElementsByTagName("a");
                     for (let i = 0; i < arr.length; i++) {
-                        milks[i] = arr[i].textContent
-                            .toLowerCase()
-                            .replace(/\s/g, "-");
+                        milks[i] = arr[i].textContent.toLowerCase().replace(/\s/g, "-");
                     }
                 } else if (attrib.textContent.includes("Country of origin")) {
                     attribs.countries = Array.from(
@@ -178,31 +176,17 @@ async function getCheeseInfo(link) {
                         .map((elem) => elem.trim());
                 }
             }
-            const p_arr = document
-                .getElementsByClassName("description")[0]
-                .getElementsByTagName("p");
+            const p_arr = document.getElementsByClassName("description")[0].getElementsByTagName("p");
             let paragraphs = [];
             for (let i = 0; i < p_arr.length; i++) {
-                if (
-                    p_arr[i].textContent.includes(
-                        "This cheese is currently unavailable on official site"
-                    )
-                ) {
+                if (p_arr[i].textContent.includes("This cheese is currently unavailable on official site")) {
                     continue;
                 }
                 paragraphs.push(p_arr[i].textContent);
             }
             let desc = paragraphs.join("");
-            let cheese_name = document
-                .getElementsByClassName("unit")[0]
-                .querySelector("h1")
-                .textContent.trim();
-            let image =
-                "https://cheese.com" +
-                document
-                    .getElementsByClassName("cheese-image")[0]
-                    .querySelector("img")
-                    .src.replace(/\.\.\//, "/");
+            let cheese_name = document.getElementsByClassName("unit")[0].querySelector("h1").textContent.trim();
+            let image = "https://cheese.com" + document.getElementsByClassName("cheese-image")[0].querySelector("img").src.replace(/\.\.\//, "/");
             let types = [];
             let textures = [];
             let colors = null;
@@ -249,9 +233,7 @@ async function scrapeByLetter(letter) {
     //final container for our cheeses of <letter>
     let data = [];
     //response to get page count for letter
-    let response = await axios.get(
-        `https://cheese.com/alphabetical/?i=${letter}&per_page=100&page=1`
-    );
+    let response = await axios.get(`https://cheese.com/alphabetical/?i=${letter}&per_page=100&page=1`);
     //dom rep to parse
     let dom = new JSDOM(response.data);
     //inst value for pages to iter over
@@ -275,15 +257,11 @@ async function scrapeByLetter(letter) {
         let { document } = dom.window;
 
         //divs representing all the cheeses on the page
-        let divs = document
-            .getElementsByClassName("grid row")[0]
-            .getElementsByClassName("cheese-item");
+        let divs = document.getElementsByClassName("grid row")[0].getElementsByClassName("cheese-item");
 
         // iter over cheeses
         for (let div of divs) {
-            let scraped_data = await getCheeseInfo(
-                `https://cheese.com${div.querySelector("a").href}`
-            );
+            let scraped_data = await getCheeseInfo(`https://cheese.com${div.querySelector("a").href}`);
 
             if (scraped_data.failed || !scraped_data) {
                 continue;
@@ -316,14 +294,9 @@ async function getCheeseOfDay() {
     return axios
         .get("https://cheese.com")
         .then((response) => {
-            const div = response.data.match(
-                /<div id="cheese-of-day" class="text-center">[\w\W]+?<\/div>/
-            );
+            const div = response.data.match(/<div id="cheese-of-day" class="text-center">[\w\W]+?<\/div>/);
             const dirty_link = div[0].match(/<a href=(.+)>/)[1];
-            link = `https://cheese.com${dirty_link.substr(
-                dirty_link.indexOf("/"),
-                dirty_link.indexOf(">") - 2
-            )}`;
+            link = `https://cheese.com${dirty_link.substr(dirty_link.indexOf("/"), dirty_link.indexOf(">") - 2)}`;
             return {
                 failed: false,
                 status: 200,
@@ -344,16 +317,3 @@ module.exports = {
     getCheeseOfDay,
     getCheeseInfo,
 };
-
-// const { performance } = require("perf_hooks");
-
-// // just code that demonstrates that it works
-// (async function() {
-//   console.log('starting scrape')
-//   let start = performance.now();
-//   scrapeCheese().then(res => {
-//     let end = performance.now() - start;
-//     console.log(end, 'finished scrape');
-//     console.log(res.length)
-//   });
-// })();
