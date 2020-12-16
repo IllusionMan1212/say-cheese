@@ -1,10 +1,10 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const { scrapeCheese, getCheeseOfDay, getCheeseInfo } = require('../../scraper/scraper');
+const { scrapeCheese, getCheeseOfDay, getCheeseInfo } = require(`${__dirname}/../../scraper/scraper`); //absolutely horrible :(
 const { JSDOM } = require('jsdom');
 
-const Cheese = require(`../models/cheese`);
+const Cheese = require(`${__dirname}/../models/cheese`);
 
 router.get('/cheese/random', (req, res) => {
     Cheese.nextCount((err, count) => {
@@ -141,53 +141,6 @@ router.get("/cheese/scrape", async (req, res) => {
 
         res.status(200).json({ failed: false, status: 200, cheeses: _res });
     })
-    // let pages = 1;
-    // let all_cheeses = [];
-    // let track = 0;
-    // for (let l = 0; l < 26; l++) {
-    //     let letter = (l + 10).toString(36);
-    //     let response = await axios.get(`https://cheese.com/alphabetical/?i=${letter}&per_page=100&page=1`);
-    //     const dom = new JSDOM(response.data);
-    //     const { document } = dom.window;
-    //     const ul = document.getElementById("id_page");
-    //     if (ul) {
-    //         let li_arr = ul.getElementsByTagName("li");
-    //         pages = parseInt(li_arr[li_arr.length - 1].textContent);
-    //     }
-    //     for (let i = 1; i <= pages; i++) {
-    //         let response = await axios.get(`https://cheese.com/alphabetical/?i=${letter}&per_page=100&page=${i}`)
-    //         const dom = new JSDOM(response.data);
-    //         const { document } = dom.window;
-    //         const divs = document.getElementsByClassName("grid row")[0].getElementsByClassName("cheese-item");
-    //         for (let div of divs) {
-    //             let scraped_data = await scraper.getCheeseInfo(`https://cheese.com${div.querySelector("a").href}`);
-    //             all_cheeses.push(scraped_data.cheese);
-    //             console.log(scraped_data);
-    //             if (scraped_data.failed) {
-    //                 res.status(scraped_data.status).json(scraped_data);
-    //                 return;
-    //             }
-
-    //             console.log(++track);
-
-    //             let new_cheese = new Cheese();
-    //             new_cheese.name = scraped_data.cheese.cheese_name;
-    //             new_cheese.link = scraped_data.cheese.link;
-    //             new_cheese.image = scraped_data.cheese.image;
-    //             new_cheese.description = scraped_data.cheese.description;
-    //             new_cheese.attributes = scraped_data.cheese.attributes;
-    //             new_cheese.country_codes = scraped_data.cheese.country_codes;
-    //             new_cheese.milks = scraped_data.cheese.milks;
-    //             new_cheese.save(err => {
-    //                 if (err) {
-    //                     res.status(500).json({ failed: true, status: 500, error: err });
-    //                     return;
-    //                 }
-    //             });
-    //         }
-    //     }
-    // }
-    // res.status(200).json({ failed: false, status: 200, cheeses: all_cheeses });
 });
 
 router.get('/cheese/:cheese', (req, res) => {
