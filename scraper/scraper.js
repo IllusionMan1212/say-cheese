@@ -250,9 +250,7 @@ async function scrapeByLetter(letter) {
     //iter over pages in <letter>
     for (let i = 1; i <= pages; i++) {
         //response of page
-        let response = await axios.get(
-            `https://cheese.com/alphabetical/?i=${letter}&per_page=100&page=${i}`
-        );
+        let response = await axios.get(`https://cheese.com/alphabetical/?i=${letter}&per_page=100&page=${i}`);
         let dom = new JSDOM(response.data);
         let { document } = dom.window;
 
@@ -266,7 +264,6 @@ async function scrapeByLetter(letter) {
             if (scraped_data.failed || !scraped_data) {
                 continue;
             }
-
             data.push(scraped_data.cheese);
         }
     }
