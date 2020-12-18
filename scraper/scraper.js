@@ -106,7 +106,7 @@ async function getCheeseInfo(link) {
             };
 
             let milks = [];
-            let countries = [];
+            let country_codes = [];
             for (let attrib of attrib_arr) {
                 if (attrib.textContent.includes("Made from")) {
                     attribs.made = attrib.textContent.trim();
@@ -118,7 +118,7 @@ async function getCheeseInfo(link) {
                     attribs.countries = Array.from(
                         attrib.querySelectorAll("a")
                     ).map((elem) => {
-                        countries.push(Object.keys(country_codes_map).find((key) => country_codes_map[key] == elem.textContent.toLowerCase().trim()));
+                        country_codes.push(Object.keys(country_codes_map).find((key) => country_codes_map[key] == elem.textContent.toLowerCase().trim()));
                         return elem.textContent.trim();
                     });
                 } else if (attrib.textContent.includes("Region")) {
@@ -129,7 +129,7 @@ async function getCheeseInfo(link) {
                     attribs.types = attrib.textContent
                         .split(":")[1]
                         .split(",")
-                        .map((elem) => elem.trim());
+                        .map((elem) => elem.trim().replace(/\s/g, "-"));
                 } else if (attrib.textContent.includes("Fat")) {
                     attribs.fat = attrib.textContent.split(":")[1].trim();
                 } else if (attrib.textContent.includes("Calcium")) {
@@ -138,11 +138,13 @@ async function getCheeseInfo(link) {
                     attribs.textures = attrib.textContent
                         .split(":")[1]
                         .split(/,|\band/g)
-                        .map((elem) => elem.trim());
+                        .map((elem) => elem.trim().replace(/\s/g, "-"));
                 } else if (attrib.textContent.includes("Rind")) {
                     attribs.rind = attrib.textContent.split(":")[1].trim();
                 } else if (attrib.textContent.includes("Colour")) {
-                    attribs.color = attrib.textContent.split(":")[1].trim();
+                    attribs.color = attrib.textContent.split(":")[1]
+                    .trim()
+                    .replace(/\s/g, "-");
                 } else if (attrib.textContent.includes("Flavour")) {
                     attribs.flavors = attrib.textContent
                         .split(":")[1]
@@ -187,22 +189,7 @@ async function getCheeseInfo(link) {
             let desc = paragraphs.join("");
             let cheese_name = document.getElementsByClassName("unit")[0].querySelector("h1").textContent.trim();
             let image = "https://cheese.com" + document.getElementsByClassName("cheese-image")[0].querySelector("img").src.replace(/\.\.\//, "/");
-            let types = [];
-            let textures = [];
-            let colors = null;
-            if (attribs.types.length != 0) {
-                types = attribs.types.map((elem) =>
-                    elem.toLowerCase().replace(/\s/g, "-")
-                );
-            }
-            if (attribs.textures.length != 0) {
-                textures = attribs.textures.map((elem) =>
-                    elem.toLowerCase().replace(/\s/g, "-")
-                );
-            }
-            if (attribs.color) {
-                colors = attribs.color.toLowerCase().replace(/\s/g, "-");
-            }
+
             return {
                 failed: false,
                 status: 200,
@@ -212,11 +199,8 @@ async function getCheeseInfo(link) {
                     image: image,
                     attributes: attribs,
                     description: desc,
-                    types: types,
-                    countries: countries,
+                    country_codes: country_codes,
                     milks: milks,
-                    textures: textures,
-                    colors: colors,
                 },
             };
         })
