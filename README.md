@@ -149,7 +149,7 @@ per_page => Number of cheeses to display in a single page. (max = 50; default = 
 `ES`= Spain, \
 `SZ`= Swaziland, \
 `SE`= Sweden, \
-`CH`= Switzerland", \
+`CH`= Switzerland, \
 `SY`= Syria, \
 `tibet`= Tibet, \
 `TR`= Turkey, \
