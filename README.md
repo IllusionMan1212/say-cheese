@@ -8,14 +8,14 @@ A RESTful api with over 1800 cheeses.
 | `/random` | None | Returns a random cheese from the db |
 | `/search` | `q`, `page`, `per_page` | Search for cheeses by name |
 | `/today` | None | Returns cheese of the day |
-| `/alphabetical` | `l`, `page`, `per_page` | Find cheeses by their first letter |
+| `/alphabetical` | `letter`, `page`, `per_page` | Find cheeses by their first letter |
 | `/vegetarian` | `page`, `per_page` | Returns an array of all vegetarian cheeses |
 
 #### Parameters
 ---
 ```
 q        => The search query you want to perform. (required)
-l        => The letter you want to display the cheeses for. (required)
+letter   => The letter you want to display the cheeses for. (required)
 page     => Pagination number. (default = 1)
 per_page => Number of cheeses to display in a single page. (max = 50; default = 10)
 ```
