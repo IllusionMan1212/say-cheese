@@ -3,10 +3,18 @@ require(`${__dirname}/api/models/db`);
 const express = require('express');
 const compression = require('compression');
 const logger = require("morgan");
+const ratelimiter = require("express-rate-limit");
 const apiRouter = require(`${__dirname}/api/routes/index`);
+
+const limit = ratelimiter({
+    windowMs: 60 * 1000,
+    max: 60,
+    draft_polli_ratelimit_headers: true,
+});
 
 const app = express();
 
+app.use(limit);
 app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());

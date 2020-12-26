@@ -1,6 +1,9 @@
 # Say Cheese
 A RESTful api with over 1800 cheeses.
 
+## Limitations
+The api is limited to 60 requests per minute to prevent abuse and because my server can't handle it lol.
+
 ## Routes
 ---
 | Route | Parameter | Description |
