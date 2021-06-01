@@ -194,7 +194,7 @@ async function getCheeseInfo(link) {
                 failed: false,
                 status: 200,
                 cheese: {
-                    cheese_name: cheese_name,
+                    name: cheese_name,
                     link: link,
                     image: image,
                     attributes: attribs,
