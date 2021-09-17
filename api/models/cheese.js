@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-// const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require('mongoose-auto-increment');
 
 const cheeseSchema = new mongoose.Schema({
     id: {
@@ -93,11 +93,11 @@ const cheeseSchema = new mongoose.Schema({
     }],
 });
 
-// cheeseSchema.index({ name: "text" });
+cheeseSchema.index({ name: "text" });
 
-// cheeseSchema.plugin(autoIncrement.plugin, {
-//     model: "cheese",
-//     field: "id"
-// });
+cheeseSchema.plugin(autoIncrement.plugin, {
+    model: "cheese",
+    field: "id"
+});
 
-// module.exports = mongoose.model("cheese", cheeseSchema);
+module.exports = mongoose.model("cheese", cheeseSchema);
