@@ -277,7 +277,7 @@ async function getCheeseOfDay() {
         .then((response) => {
             const div = response.data.match(/<div id="cheese-of-day" class="text-center">[\w\W]+?<\/div>/);
             const dirty_link = div[0].match(/<a href=(.+)>/)[1];
-            link = `https://cheese.com${dirty_link.substr(dirty_link.indexOf("/"), dirty_link.indexOf(">") - 2)}`;
+            link = `https://cheese.com${dirty_link.substring(dirty_link.indexOf("/"), dirty_link.lastIndexOf("/"))}`;
             return {
                 failed: false,
                 status: 200,
